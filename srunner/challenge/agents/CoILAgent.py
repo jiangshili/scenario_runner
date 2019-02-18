@@ -21,10 +21,10 @@ except IndexError:
 
 import carla
 
-from srunner.challenge.autonomous_agent import AutonomousAgent
+from srunner.challenge.agents.autonomous_agent import AutonomousAgent
 
-from srunner.agents.tools.misc import distance_vehicle
-from srunner.agents.navigation.local_planner import RoadOption
+from srunner.challenge.agents.tools.misc import distance_vehicle
+from srunner.challenge.agents.navigation.local_planner import RoadOption
 
 
 class CoILAgent(AutonomousAgent):
