@@ -4,12 +4,13 @@ import sys
 import os
 import glob
 import torch
+import math
 
 from scipy.misc import imresize
 
 import matplotlib.pyplot as plt
 
-from srunner.agents.network import CoILModel
+from srunner.challenge.agents.network import CoILModel
 
 try:
     sys.path.append(glob.glob('**/carla-*%d.%d-%s.egg' % (
@@ -23,9 +24,27 @@ import carla
 
 from srunner.challenge.agents.autonomous_agent import AutonomousAgent
 
-from srunner.challenge.agents.tools.misc import distance_vehicle
-from srunner.challenge.agents.navigation.local_planner import RoadOption
+from enum import Enum
 
+
+class RoadOption(Enum):
+    """
+    RoadOption represents the possible topological configurations when moving from a segment of lane to other.
+    """
+    VOID = -1
+    LEFT = 1
+    RIGHT = 2
+    STRAIGHT = 3
+    LANEFOLLOW = 4
+
+
+
+def distance_vehicle(waypoint, vehicle_transform):
+    loc = vehicle_transform.location
+    dx = waypoint.transform.location.x - loc.x
+    dy = waypoint.transform.location.y - loc.y
+
+    return math.sqrt(dx * dx + dy * dy)
 
 class CoILAgent(AutonomousAgent):
 
@@ -91,8 +110,8 @@ class CoILAgent(AutonomousAgent):
         self._expand_command_front = 5
         self._expand_command_back = 3
 
-
     def sensors_setup(self):
+
         sensors = [['sensor.camera.rgb',
                    {'x': 2.0, 'y': 0.0,
                     'z': 1.40, 'roll': 0.0,

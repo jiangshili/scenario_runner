@@ -56,6 +56,7 @@ class DummyAgent(AutonomousAgent):
 
     def run_step(self, input_data):
 
+        print (self._global_plan)
         print("=====================>")
         for key, val in input_data.items():
             shape = val[1].shape
