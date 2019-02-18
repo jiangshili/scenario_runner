@@ -9,8 +9,6 @@ from scipy.misc import imresize
 
 import matplotlib.pyplot as plt
 
-
-
 from network import CoILModel
 
 try:
@@ -27,7 +25,6 @@ from challenge.autonomous_agent import AutonomousAgent
 
 from agents.tools.misc import distance_vehicle
 from agents.navigation.local_planner import RoadOption
-
 
 
 class CoILAgent(AutonomousAgent):
