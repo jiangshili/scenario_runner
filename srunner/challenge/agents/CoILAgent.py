@@ -9,7 +9,7 @@ from scipy.misc import imresize
 
 import matplotlib.pyplot as plt
 
-from network import CoILModel
+from srunner.agents.network import CoILModel
 
 try:
     sys.path.append(glob.glob('**/carla-*%d.%d-%s.egg' % (
@@ -21,10 +21,10 @@ except IndexError:
 
 import carla
 
-from challenge.autonomous_agent import AutonomousAgent
+from srunner.challenge.autonomous_agent import AutonomousAgent
 
-from agents.tools.misc import distance_vehicle
-from agents.navigation.local_planner import RoadOption
+from srunner.agents.tools.misc import distance_vehicle
+from srunner.agents.navigation.local_planner import RoadOption
 
 
 class CoILAgent(AutonomousAgent):
