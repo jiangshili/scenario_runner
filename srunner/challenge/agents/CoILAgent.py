@@ -111,7 +111,7 @@ class CoILAgent(AutonomousAgent):
         self._expand_command_front = 5
         self._expand_command_back = 3
 
-    def sensors_setup(self):
+    def sensors(self):
 
         sensors = [['sensor.camera.rgb',
                    {'x': 2.0, 'y': 0.0,
@@ -125,7 +125,7 @@ class CoILAgent(AutonomousAgent):
                    # 'speed'
                    # ],
                    ['sensor.other.gnss', {'x': 0.7, 'y': -0.4, 'z': 1.60},
-                    'GPS'],
+                    'GPS']
                    ]
 
         return sensors
@@ -137,7 +137,6 @@ class CoILAgent(AutonomousAgent):
         # TODO, input speed should come on the input data
 
         #measurements, sensor_data, directions, target
-        print ("Input data SPEED")
         print("=====================>")
         for key, val in input_data.items():
             shape = val[1].shape
