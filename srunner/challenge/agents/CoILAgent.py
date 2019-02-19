@@ -41,8 +41,8 @@ class RoadOption(Enum):
 
 def distance_vehicle(waypoint, vehicle_transform):
     loc = vehicle_transform.location
-    dx = waypoint.transform.location.x - loc.x
-    dy = waypoint.transform.location.y - loc.y
+    dx = waypoint['lat'] - loc.x
+    dy = waypoint['lon'] - loc.y
 
     return math.sqrt(dx * dx + dy * dy)
 
@@ -119,10 +119,10 @@ class CoILAgent(AutonomousAgent):
                     'width': 800, 'height': 600,
                     'fov': 100},
                     'rgb'],
-                   ['sensor.speedometer',
-                    {'reading_frequency': 20},
-                    'speed'
-                    ],
+                   #['sensor.speedometer',
+                   # {'reading_frequency': 20},
+                   # 'speed'
+                   # ],
                    ['sensor.other.gnss', {'x': 0.7, 'y': -0.4, 'z': 1.60},
                     'GPS']
                    ]
@@ -137,12 +137,13 @@ class CoILAgent(AutonomousAgent):
 
         #measurements, sensor_data, directions, target
         print ("Input data SPEED")
-        print (input_data['speed'])
+        #print (input_data['speed'])
 
         directions = self._get_current_direction(input_data['GPS'])
 
         # Take the forward speed and normalize it for it to go from 0-1
-        norm_speed = input_data['speed'][1] / self._params['speed_factor'] #.SPEED_FACTOR
+        #norm_speed = input_data['speed'][1] / self._params['speed_factor'] #.SPEED_FACTOR
+        norm_speed = 0.3
         norm_speed = torch.cuda.FloatTensor([norm_speed]).unsqueeze(0)
         directions_tensor = torch.cuda.LongTensor([directions])
         # Compute the forward pass processing the sensors got from CARLA.
@@ -162,13 +163,12 @@ class CoILAgent(AutonomousAgent):
 
         return control
 
-    def set_global_plan(self, topological_plan, waypoints_plan):
+    def set_global_plan(self, topological_plan):
         # We expand the commands before the curves.
 
         self._expand_commands(topological_plan)
 
-        self._topological_plan = topological_plan
-        self._waypoints_plan = waypoints_plan
+        self._global_plan = topological_plan
 
 
     def get_attentions(self, layers=None):
@@ -198,7 +198,6 @@ class CoILAgent(AutonomousAgent):
     def _process_sensors(self, sensor):
 
         iteration = 0
-        # TODO check the sensor itens things
 
         sensor = sensor[self._params['image_cut'][0]:self._params['image_cut'][1], ...]
 
@@ -230,9 +229,9 @@ class CoILAgent(AutonomousAgent):
         # for the current position and orientation try to get the closest one from the waypoints
         closest_id = 0
         min_distance = 100000
-        for index in self._waypoints_plan:
+        for index in self._global_plan:
 
-            waypoint = self._waypoints_plan[index]
+            waypoint = self._global_plan[index][0]
             # TODO maybe add if the agent is in a similar orientation.
 
             computed_distance = distance_vehicle(waypoint, vehicle_transform)
@@ -240,7 +239,7 @@ class CoILAgent(AutonomousAgent):
                 min_distance = computed_distance
                 closest_id = index
 
-        direction = self._topological_plan[closest_id]
+        direction = self._global_plan[closest_id][1]
 
         if direction == RoadOption.LEFT:
             direction = 3.0
@@ -281,7 +280,7 @@ class CoILAgent(AutonomousAgent):
         current_curve = RoadOption.LANEFOLLOW
         for index in range(len(topological_plan)):
 
-            command = topological_plan[index]
+            command = topological_plan[index][1]
 
             if command != RoadOption.LANEFOLLOW and not inside:
                 inside = True
@@ -303,45 +302,15 @@ class CoILAgent(AutonomousAgent):
             command  = start_end_index_command[0]
 
             # Add the backwards curves ( Before the begginning)
-            for index in range(1 , self._expand_command_front+1):
-                changed_index = start_index- index
-                if changed_index > 0 :
-                    topological_plan[changed_index] = command
+            for index in range(1, self._expand_command_front+1):
+                changed_index = start_index - index
+                if changed_index > 0:
+                    topological_plan[changed_index] = (topological_plan[changed_index][0], command)
 
 
             for index in range(0, self._expand_command_back):
                 changed_index = end_index + index
                 if changed_index < len(topological_plan) :
-                    topological_plan[changed_index] = command
+                    topological_plan[changed_index][1] = (topological_plan[changed_index][0], command)
 
 
-
-
-
-    def _process_model_outputs_wp(self, outputs):
-        """
-         A bit of heuristics in the control, to eventually make car faster, for instance.
-        Returns:
-
-        """
-        wpa1, wpa2, throttle, brake = outputs[3], outputs[4], outputs[1], outputs[2]
-        if brake < 0.2:
-            brake = 0.0
-
-        if throttle > brake:
-            brake = 0.0
-
-        steer = 0.7 * wpa2
-
-        if steer > 0:
-            steer = min(steer, 1)
-        else:
-            steer = max(steer, -1)
-
-        return steer, throttle, brake
-
-    def _get_oracle_prediction(self, measurements, target):
-        # For the oracle, the current version of sensor data is not really relevant.
-        control, _, _, _, _ = self.control_agent.run_step(measurements, [], [], target)
-
-        return control.steer, control.throttle, control.brake
