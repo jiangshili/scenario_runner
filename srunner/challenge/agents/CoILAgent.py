@@ -125,7 +125,7 @@ class CoILAgent(AutonomousAgent):
                    # 'speed'
                    # ],
                    ['sensor.other.gnss', {'x': 0.7, 'y': -0.4, 'z': 1.60},
-                    'GPS']
+                    'GPS'],
                    ]
 
         return sensors
@@ -138,6 +138,11 @@ class CoILAgent(AutonomousAgent):
 
         #measurements, sensor_data, directions, target
         print ("Input data SPEED")
+        print("=====================>")
+        for key, val in input_data.items():
+            shape = val[1].shape
+            print("[{} -- {:06d}] with shape {}".format(key, val[0], shape))
+        print("<=====================")
         #print (input_data['speed'])
 
         directions = self._get_current_direction(input_data['GPS'])
