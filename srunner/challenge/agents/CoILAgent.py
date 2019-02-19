@@ -129,6 +129,8 @@ class CoILAgent(AutonomousAgent):
 
         return sensors
 
+    # CONVERT FROM LAT LON TO WAYPOINTS IN Z.
+
     def run_step(self, input_data):
 
         # TODO, input speed should come on the input data
