@@ -51,7 +51,7 @@ class CoILAgent(AutonomousAgent):
     def __init__(self):
         AutonomousAgent.__init__(self)
         self._params = {
-            'checkpoint': '320000',
+            'checkpoint': '200000',
             "model_type": 'coil-icra',
             "model_configuration": {'perception': {
                 'res': {
@@ -90,7 +90,8 @@ class CoILAgent(AutonomousAgent):
             'size': [3, 88, 200]
         }
 
-        self._checkpoint = torch.load(str(self._params['checkpoint']) + '.pth')
+        self._checkpoint = torch.load(os.path.join('srunner/challenge/agents/network',
+                                                   str(self._params['checkpoint']) + '.pth'))
         # Set the carla version that is going to be used by the interface
         # We save the checkpoint for some interesting future use.
 
