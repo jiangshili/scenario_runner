@@ -44,7 +44,7 @@ class CoILICRA(nn.Module):
             number_output_neurons = params['perception']['fc']['neurons'][-1]
 
         elif 'res' in params['perception']:  # pre defined residual networks
-            resnet_module = importlib.import_module('network.models.building_blocks.resnet')
+            resnet_module = importlib.import_module('srunner.challenge.agents.network.models.building_blocks.resnet')
             resnet_module = getattr(resnet_module, params['perception']['res']['name'])
             self.perception = resnet_module(pretrained=True,
                                              num_classes=params['perception']['res']['num_classes'])
