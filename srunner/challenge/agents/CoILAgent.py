@@ -144,7 +144,7 @@ class CoILAgent(AutonomousAgent):
         print("<=====================")
         #print (input_data['speed'])
 
-        directions = self._get_current_direction(input_data['GPS'])
+        directions = 2.0 #self._get_current_direction(input_data['GPS'])
 
         # Take the forward speed and normalize it for it to go from 0-1
         #norm_speed = input_data['speed'][1] / self._params['speed_factor'] #.SPEED_FACTOR
@@ -234,7 +234,7 @@ class CoILAgent(AutonomousAgent):
         # for the current position and orientation try to get the closest one from the waypoints
         closest_id = 0
         min_distance = 100000
-        for index in self._global_plan:
+        for index in range(len(self._global_plan)):
 
             waypoint = self._global_plan[index][0]
             # TODO maybe add if the agent is in a similar orientation.
