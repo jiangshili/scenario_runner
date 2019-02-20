@@ -43,6 +43,8 @@ def distance_vehicle(waypoint, vehicle_position):
     dx = waypoint['lat'] - vehicle_position[0]
     dy = waypoint['lon'] - vehicle_position[1]
 
+    print ('dx dy ', dx, " ", dy)
+
     return math.sqrt(dx * dx + dy * dy)
 
 
@@ -242,8 +244,7 @@ class CoILAgent(AutonomousAgent):
         for index in range(len(self._global_plan)):
 
             waypoint = self._global_plan[index][0]
-            # TODO maybe add if the agent is in a similar orientation.
-            print ("WP : ", waypoint)
+
             computed_distance = distance_vehicle(waypoint, vehicle_position)
             if computed_distance < min_distance:
                 min_distance = computed_distance
