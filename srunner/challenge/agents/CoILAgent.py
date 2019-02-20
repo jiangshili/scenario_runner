@@ -19,6 +19,14 @@ try:
         'win-amd64' if os.name == 'nt' else 'linux-x86_64'))[0])
 except IndexError:
     pass
+try:
+    CARLA_ROOT = os.environ.get('CARLA_ROOT')
+    if not CARLA_ROOT:
+        print('Warning! Define environment variable CARLA_ROOT pointing to the CARLA base folder.')
+
+    sys.path.append(glob.glob('{}/PythonAPI'.format(CARLA_ROOT))[0])
+except IndexError:
+    pass
 
 import carla
 
@@ -26,16 +34,7 @@ from srunner.challenge.agents.autonomous_agent import AutonomousAgent
 
 from enum import Enum
 
-
-class RoadOption(Enum):
-    """
-    RoadOption represents the possible topological configurations when moving from a segment of lane to other.
-    """
-    VOID = -1
-    LEFT = 1
-    RIGHT = 2
-    STRAIGHT = 3
-    LANEFOLLOW = 4
+from agents.navigation.local_planner import  RoadOption
 
 
 def distance_vehicle(waypoint, vehicle_position):
