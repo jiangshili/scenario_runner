@@ -79,7 +79,7 @@ class ServerManagerBinary(ServerManager):
         exec_command.append('-world-port={}'.format(port))
         if not human_flag:
             exec_command.append('-benchmark')
-            exec_command.append('-fps=120')
+            exec_command.append('-fps=200')
 
         if track_id == Track.NO_RENDERING:
             # create ini file
