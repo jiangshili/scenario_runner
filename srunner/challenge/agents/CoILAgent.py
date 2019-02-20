@@ -123,7 +123,7 @@ class CoILAgent(AutonomousAgent):
                     'fov': 100},
                     'rgb'],
                    ['sensor.speedometer',
-                    {'reading_frequency': 40},
+                    {'reading_frequency': 12},
                     'speed'
                     ],
                    ['sensor.other.gnss', {'x': 0.7, 'y': -0.4, 'z': 1.60},
@@ -170,7 +170,7 @@ class CoILAgent(AutonomousAgent):
         # There is the posibility to replace some of the predictions with oracle predictions.
 
         self.first_iter = False
-        imsave('Image_' + str(self.count_iterations) + '.png', input_data['rgb'][1])
+        imsave('Image_' + str(self.count_iterations) + '.png', self.latest_image)
         self.count_iterations += 1
         return control
 
