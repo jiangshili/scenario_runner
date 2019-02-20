@@ -33,6 +33,7 @@ class Speedometer(object):
         self._callback = None
         #  Counts the frames
         self._frame_number = 0
+        self._run_ps = True
         self.produce_speed()
 
     def _get_forward_speed(self):
@@ -47,15 +48,16 @@ class Speedometer(object):
             [np.cos(pitch) * np.cos(yaw), np.cos(pitch) * np.sin(yaw), np.sin(pitch)])
         speed = np.dot(vel_np, orientation)
         return speed
+
     # TODO ADD some destruction methods
 
     @threaded
     def produce_speed(self):
         latest_speed_read = time.time()
-        while True:
+        while self._run_ps:
             if self._callback is not None:
                 capture = time.time()
-                if capture - latest_speed_read > (1/self._reading_frequency):
+                if capture - latest_speed_read > (1 / self._reading_frequency):
                     self._callback(SpeedMeasurement(self._get_forward_speed(), self._frame_number))
                     self._frame_number += 1
                     latest_speed_read = time.time()
@@ -63,6 +65,9 @@ class Speedometer(object):
     def listen(self, callback):
         # Tell that this function receives what the producer does.
         self._callback = callback
+
+    def destroy(self):
+        self._run_ps = False
 
 
 class CallBack(object):
