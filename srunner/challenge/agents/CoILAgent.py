@@ -178,7 +178,7 @@ class CoILAgent(AutonomousAgent):
     def set_global_plan(self, topological_plan):
         # We expand the commands before the curves.
 
-        self._expand_commands(topological_plan)
+        topological_plan = self._expand_commands(topological_plan)
 
         print (topological_plan)
 
@@ -307,10 +307,12 @@ class CoILAgent(AutonomousAgent):
 
                 start = -1
 
+        print (curves_start_end)
+
         for start_end_index_command in curves_start_end:
             start_index = start_end_index_command[0]
-            end_index = start_end_index_command[0]
-            command  = start_end_index_command[0]
+            end_index = start_end_index_command[1]
+            command = start_end_index_command[2]
 
             # Add the backwards curves ( Before the begginning)
             for index in range(1, self._expand_command_front+1):
@@ -318,10 +320,13 @@ class CoILAgent(AutonomousAgent):
                 if changed_index > 0:
                     topological_plan[changed_index] = (topological_plan[changed_index][0], command)
 
-
+            # add the onnes after the end
             for index in range(0, self._expand_command_back):
                 changed_index = end_index + index
-                if changed_index < len(topological_plan) :
-                    topological_plan[changed_index][1] = (topological_plan[changed_index][0], command)
+                if changed_index < len(topological_plan):
+                    topological_plan[changed_index] = (topological_plan[changed_index][0], command)
 
 
+        print (topological_plan)
+
+        return topological_plan
