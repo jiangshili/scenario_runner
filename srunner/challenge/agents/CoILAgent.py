@@ -180,6 +180,8 @@ class CoILAgent(AutonomousAgent):
 
         self._expand_commands(topological_plan)
 
+        print (topological_plan)
+
         self._global_plan = topological_plan
 
 
