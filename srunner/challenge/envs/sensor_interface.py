@@ -59,6 +59,8 @@ class Speedometer(object):
                     self._callback(SpeedMeasurement(self._get_forward_speed(), self._frame_number))
                     self._frame_number += 1
                     latest_speed_read = time.time()
+                else:
+                    time.sleep(0.001)
 
     def listen(self, callback):
         # Tell that this function receives what the producer does.
@@ -109,6 +111,7 @@ class CallBack(object):
 
     def _parse_speedometer(self, speed, tag):
         self._data_provider.update_sensor(tag, speed.data, speed.frame_number)
+
 
 class SensorInterface(object):
     def __init__(self):
