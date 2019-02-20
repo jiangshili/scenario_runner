@@ -49,8 +49,6 @@ class Speedometer(object):
         speed = np.dot(vel_np, orientation)
         return speed
 
-    # TODO ADD some destruction methods
-
     @threaded
     def produce_speed(self):
         latest_speed_read = time.time()
