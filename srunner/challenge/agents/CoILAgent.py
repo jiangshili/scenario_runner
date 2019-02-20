@@ -180,7 +180,6 @@ class CoILAgent(AutonomousAgent):
 
         topological_plan = self._expand_commands(topological_plan)
 
-        print (topological_plan)
 
         self._global_plan = topological_plan
 
@@ -292,13 +291,16 @@ class CoILAgent(AutonomousAgent):
         for index in range(len(topological_plan)):
 
             command = topological_plan[index][1]
+            print (command)
 
             if command != RoadOption.LANEFOLLOW and not inside:
+                print ("A curve starts")
                 inside = True
                 start = index
                 current_curve = command
 
             if command == RoadOption.LANEFOLLOW and inside:
+                print ("A curve ends")
                 inside = False
                 # End now is the index.
                 curves_start_end.append([start, index, current_curve])
