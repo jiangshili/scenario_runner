@@ -38,13 +38,13 @@ class RoadOption(Enum):
     LANEFOLLOW = 4
 
 
+def distance_vehicle(waypoint, vehicle_position):
 
-def distance_vehicle(waypoint, vehicle_transform):
-    loc = vehicle_transform.location
-    dx = waypoint['lat'] - loc.x
-    dy = waypoint['lon'] - loc.y
+    dx = waypoint['lat'] - vehicle_position[0]
+    dy = waypoint['lon'] - vehicle_position[1]
 
     return math.sqrt(dx * dx + dy * dy)
+
 
 class CoILAgent(AutonomousAgent):
 
@@ -123,7 +123,7 @@ class CoILAgent(AutonomousAgent):
                     'fov': 100},
                     'rgb'],
                    ['sensor.speedometer',
-                    {'reading_frequency': 15},
+                    {'reading_frequency': 30},
                     'speed'
                     ],
                    ['sensor.other.gnss', {'x': 0.7, 'y': -0.4, 'z': 1.60},
@@ -147,7 +147,7 @@ class CoILAgent(AutonomousAgent):
         print ("speed: ", input_data['speed'])
         print ("gps: ", input_data['GPS'])
 
-        directions = self._get_current_direction(input_data['GPS'])
+        directions = self._get_current_direction(input_data['GPS'][1])
 
         # Take the forward speed and normalize it for it to go from 0-1
         norm_speed = input_data['speed'][1] / self._params['speed_factor'] #.SPEED_FACTOR
@@ -182,7 +182,6 @@ class CoILAgent(AutonomousAgent):
 
     def get_attentions(self, layers=None):
         """
-
         Returns
             The activations obtained from the first layers of the latest iteration.
 
@@ -231,7 +230,7 @@ class CoILAgent(AutonomousAgent):
 
         return image_input
 
-    def _get_current_direction(self, vehicle_transform):
+    def _get_current_direction(self, vehicle_position):
 
         # TODO: probably start by expanding the size of the turns.
 
@@ -243,7 +242,7 @@ class CoILAgent(AutonomousAgent):
             waypoint = self._global_plan[index][0]
             # TODO maybe add if the agent is in a similar orientation.
 
-            computed_distance = distance_vehicle(waypoint, vehicle_transform)
+            computed_distance = distance_vehicle(waypoint, vehicle_position)
             if computed_distance < min_distance:
                 min_distance = computed_distance
                 closest_id = index
