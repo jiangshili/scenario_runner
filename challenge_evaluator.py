@@ -185,13 +185,12 @@ class ChallengeEvaluator(object):
         return vehicle
 
     def setup_sensors(self, sensors, vehicle):
-        # setup sensors
-        bp_library = self._world.get_blueprint_library()
-        for item in self._sensors_setup:
+        bp_library = self.world.get_blueprint_library()
+        for item in sensors:
             # These are the pseudosensors (not spawned)
             if item[0].startswith('sensor.speedometer'):
                 # The speedometer pseudo sensor is created directly here
-                sensor = Speedometer(self._vehicle, item[1]['reading_frequency'])
+                sensor = Speedometer(vehicle, item[1]['reading_frequency'])
             # These are the sensors spawned on the carla world
             else:
                 bp = bp_library.find(item[0])
@@ -224,12 +223,38 @@ class ChallengeEvaluator(object):
 
                 # create sensor
                 sensor_transform = carla.Transform(sensor_location, sensor_rotation)
-                sensor = self._world.spawn_actor(bp, sensor_transform,
-                                                 self._vehicle)
+                sensor = self.world.spawn_actor(bp, sensor_transform,
+                                                 vehicle)
             # setup callback
-            sensor.listen(CallBack(item[2], sensor, self._agent.data_provider))
+            sensor.listen(CallBack(item[2], sensor, self.agent_instance.sensor_interface))
             self._sensors_list.append(sensor)
 
+        """    
+        bp_library = self.world.get_blueprint_library()
+        for item in sensors:
+            bp = bp_library.find(item[0])
+            
+            if item[0].startswith('sensor.camera'):
+                bp.set_attribute('image_size_x', str(item[1]['width']))
+                bp.set_attribute('image_size_y', str(item[1]['height']))
+                bp.set_attribute('fov', str(item[1]['fov']))
+                sensor_location = carla.Location(x=item[1]['x'], y=item[1]['y'], z=item[1]['z'])
+                sensor_rotation = carla.Rotation(pitch=item[1]['pitch'], roll=item[1]['roll'], yaw=item[1]['yaw'])
+            elif item[0].startswith('sensor.lidar'):
+                bp.set_attribute('range', '5000')
+                sensor_location = carla.Location(x=item[1]['x'], y=item[1]['y'], z=item[1]['z'])
+                sensor_rotation = carla.Rotation(pitch=item[1]['pitch'], roll=item[1]['roll'], yaw=item[1]['yaw'])
+            elif item[0].startswith('sensor.other.gnss'):
+                sensor_location = carla.Location(x=item[1]['x'], y=item[1]['y'], z=item[1]['z'])
+                sensor_rotation = carla.Rotation()
+
+            # create sensor
+            sensor_transform = carla.Transform(sensor_location, sensor_rotation)
+            sensor = self.world.spawn_actor(bp, sensor_transform, vehicle)
+            # setup callback
+            sensor.listen(CallBack(item[2], sensor, self.agent_instance.sensor_interface))
+            self._sensors_list.append(sensor)
+        """
         # check that all sensors have initialized their data structure
         while not self.agent_instance.all_sensors_ready():
             time.sleep(0.1)
