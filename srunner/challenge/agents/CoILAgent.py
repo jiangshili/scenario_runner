@@ -170,7 +170,7 @@ class CoILAgent(AutonomousAgent):
         # There is the posibility to replace some of the predictions with oracle predictions.
 
         self.first_iter = False
-        imsave('Image_' + str(self.count_iterations) + '.png', self.latest_image)
+        imsave('Image_' + str(self.count_iterations) + '.png', input_data['rgb'][1])
         self.count_iterations += 1
         return control
 
