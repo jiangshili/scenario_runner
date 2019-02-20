@@ -51,7 +51,7 @@ class CoILAgent(AutonomousAgent):
     def __init__(self):
         AutonomousAgent.__init__(self)
         self._params = {
-            'checkpoint': '320000',
+            'checkpoint': '200000',
             "model_type": 'coil-icra',
             "model_configuration": {'perception': {
                 'res': {
@@ -123,7 +123,7 @@ class CoILAgent(AutonomousAgent):
                     'fov': 100},
                     'rgb'],
                    ['sensor.speedometer',
-                    {'reading_frequency': 12},
+                    {'reading_frequency': 40},
                     'speed'
                     ],
                    ['sensor.other.gnss', {'x': 0.7, 'y': -0.4, 'z': 1.60},
@@ -170,7 +170,7 @@ class CoILAgent(AutonomousAgent):
         # There is the posibility to replace some of the predictions with oracle predictions.
 
         self.first_iter = False
-        #imsave('Image_' + str(self.count_iterations) + '.png', input_data['rgb'][1])
+        imsave('Image_' + str(self.count_iterations) + '.png', input_data['rgb'][1])
         self.count_iterations += 1
         return control
 
