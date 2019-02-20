@@ -6,7 +6,7 @@ import glob
 import torch
 import math
 
-from scipy.misc import imresize
+from scipy.misc import imresize, imsave
 
 import matplotlib.pyplot as plt
 
@@ -106,6 +106,8 @@ class CoILAgent(AutonomousAgent):
         self.latest_image = None
         self.latest_image_tensor = None
 
+        self.count_iterations = 0  # we use this to debug an save images.
+
         # Number of expanded curve commands, both in front and in back
 
         self._expand_command_front = 5
@@ -165,7 +167,8 @@ class CoILAgent(AutonomousAgent):
         # There is the posibility to replace some of the predictions with oracle predictions.
 
         self.first_iter = False
-
+        imsave('Image_' + str(self.count_iterations) + '.png', self.latest_image)
+        self.count_iterations += 1
         return control
 
     def set_global_plan(self, topological_plan):
