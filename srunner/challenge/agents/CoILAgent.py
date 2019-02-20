@@ -51,7 +51,7 @@ class CoILAgent(AutonomousAgent):
     def __init__(self):
         AutonomousAgent.__init__(self)
         self._params = {
-            'checkpoint': '200000',
+            'checkpoint': '320000',
             "model_type": 'coil-icra',
             "model_configuration": {'perception': {
                 'res': {
