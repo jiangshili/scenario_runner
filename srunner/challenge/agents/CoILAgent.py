@@ -122,10 +122,10 @@ class CoILAgent(AutonomousAgent):
                     'width': 800, 'height': 600,
                     'fov': 100},
                     'rgb'],
-                   #['sensor.speedometer',
-                   # {'reading_frequency': 20},
-                   # 'speed'
-                   # ],
+                   ['sensor.speedometer',
+                    {'reading_frequency': 20},
+                    'speed'
+                    ],
                    ['sensor.other.gnss', {'x': 0.7, 'y': -0.4, 'z': 1.60},
                     'GPS']
                    ]
@@ -144,13 +144,13 @@ class CoILAgent(AutonomousAgent):
             shape = val[1].shape
             print("[{} -- {:06d}] with shape {}".format(key, val[0], shape))
         print("<=====================")
-        #print (input_data['speed'])
+        print ("speed: ", input_data['speed'])
 
-        directions = 2.0 #self._get_current_direction(input_data['GPS'])
+        directions = self._get_current_direction(input_data['GPS'])
 
         # Take the forward speed and normalize it for it to go from 0-1
-        #norm_speed = input_data['speed'][1] / self._params['speed_factor'] #.SPEED_FACTOR
-        norm_speed = 0.3
+        norm_speed = input_data['speed'][1] / self._params['speed_factor'] #.SPEED_FACTOR
+
         norm_speed = torch.cuda.FloatTensor([norm_speed]).unsqueeze(0)
         directions_tensor = torch.cuda.LongTensor([directions])
         # Compute the forward pass processing the sensors got from CARLA.
