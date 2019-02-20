@@ -43,7 +43,6 @@ def distance_vehicle(waypoint, vehicle_position):
     dx = waypoint['lat'] - vehicle_position[0]
     dy = waypoint['lon'] - vehicle_position[1]
 
-    print ('dx dy ', dx, " ", dy)
 
     return math.sqrt(dx * dx + dy * dy)
 
@@ -236,8 +235,6 @@ class CoILAgent(AutonomousAgent):
 
     def _get_current_direction(self, vehicle_position):
 
-        # TODO: probably start by expanding the size of the turns.
-
         # for the current position and orientation try to get the closest one from the waypoints
         closest_id = 0
         min_distance = 100000
@@ -250,6 +247,7 @@ class CoILAgent(AutonomousAgent):
                 min_distance = computed_distance
                 closest_id = index
 
+        print ("Closest waypoint ", closest_id, "dist ", min_distance)
         direction = self._global_plan[closest_id][1]
 
         if direction == RoadOption.LEFT:
