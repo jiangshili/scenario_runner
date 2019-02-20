@@ -123,7 +123,7 @@ class CoILAgent(AutonomousAgent):
                     'fov': 100},
                     'rgb'],
                    ['sensor.speedometer',
-                    {'reading_frequency': 20},
+                    {'reading_frequency': 15},
                     'speed'
                     ],
                    ['sensor.other.gnss', {'x': 0.7, 'y': -0.4, 'z': 1.60},
@@ -145,6 +145,7 @@ class CoILAgent(AutonomousAgent):
             print("[{} -- {:06d}] with shape {}".format(key, val[0], shape))
         print("<=====================")
         print ("speed: ", input_data['speed'])
+        print ("gps: ", input_data['GPS'])
 
         directions = self._get_current_direction(input_data['GPS'])
 
