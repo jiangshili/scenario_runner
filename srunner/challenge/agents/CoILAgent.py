@@ -243,7 +243,7 @@ class CoILAgent(AutonomousAgent):
 
             waypoint = self._global_plan[index][0]
             # TODO maybe add if the agent is in a similar orientation.
-
+            print ("WP : ", waypoint)
             computed_distance = distance_vehicle(waypoint, vehicle_position)
             if computed_distance < min_distance:
                 min_distance = computed_distance
