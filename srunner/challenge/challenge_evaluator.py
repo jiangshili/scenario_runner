@@ -21,7 +21,7 @@ import random
 import sys
 import time
 import random
-
+import traceback
 import carla
 
 from agents.navigation.local_planner import compute_connection, RoadOption
@@ -336,6 +336,7 @@ class ChallengeEvaluator(object):
                                               config)
                 except Exception as exception:
                     print("The scenario cannot be loaded")
+                    traceback.print_exc()
                     print(exception)
                     self.cleanup(ego=True)
                     continue
