@@ -202,6 +202,7 @@ class ScenarioManager(object):
                 # Update game time and actor information
                 GameTime.on_carla_tick(timestamp)
                 CarlaDataProvider.on_carla_tick()
+                print ("Updated input data ")
 
                 # Tick scenario
                 self.scenario_tree.tick_once()
