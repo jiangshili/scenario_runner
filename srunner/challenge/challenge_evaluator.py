@@ -311,11 +311,13 @@ class ChallengeEvaluator(object):
                 self.world.apply_settings(settings)
 
                 # Wait for the world to be ready
+
+                print (" TICKING THE WORLD")
+                self.world.tick()
                 print (" WAIT FOR TICK")
                 self.world.wait_for_tick(self.wait_for_world)
                 print ("SERVER READY")
                 # Create scenario manager
-                self.world.tick()
                 self.manager = ScenarioManager(self.world, args.debug)
 
                 try:
