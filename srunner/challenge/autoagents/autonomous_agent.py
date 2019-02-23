@@ -2,7 +2,7 @@
 from srunner.challenge.envs.sensor_interface import SensorInterface
 
 class AutonomousAgent():
-    def __init__(self, world):
+    def __init__(self):
         #  current global plans to reach a destination
         self._global_plan = None,
 
