@@ -26,7 +26,7 @@ class ChallengeBasic(BasicScenario):
 
     category = "ChallengeBasic"
     radius = 10.0           # meters
-    timeout = 1000            # Timeout of scenario in seconds
+    timeout = 300           # Timeout of scenario in seconds
 
     def __init__(self, world, ego_vehicle, other_actors, town, randomize=False, debug_mode=False, config=None):
         """
@@ -45,7 +45,9 @@ class ChallengeBasic(BasicScenario):
 
     def _create_behavior(self):
         """
+        Basic behavior do nothing, i.e. Idle
         """
+
         # Build behavior tree
         sequence = py_trees.composites.Sequence("Sequence Behavior")
         idle_behavior = Idle()
@@ -58,7 +60,6 @@ class ChallengeBasic(BasicScenario):
         A list of all test criteria will be created that is later used
         in parallel behavior tree.
         """
-        criteria = []
 
         collision_criterion = CollisionTest(self.ego_vehicle, terminate_on_failure=True)
         target_criterion = InRadiusRegionTest(self.ego_vehicle,
@@ -67,14 +68,17 @@ class ChallengeBasic(BasicScenario):
                                              radius=self.radius)
 
         route_criterion = InRouteTest(self.ego_vehicle,
-                                      radius=self.radius,
+                                      radius=30.0,
                                       route=self.route,
                                       offroad_max=20,
                                       terminate_on_failure=True)
 
+        completion_criterion = RouteCompletionTest(self.ego_vehicle, route=self.route)
+
         parallel_criteria = py_trees.composites.Parallel("group_criteria",
                                                          policy=py_trees.common.ParallelPolicy.SUCCESS_ON_ONE)
 
+        parallel_criteria.add_child(completion_criterion)
         parallel_criteria.add_child(collision_criterion)
         parallel_criteria.add_child(target_criterion)
         parallel_criteria.add_child(route_criterion)

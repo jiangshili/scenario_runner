@@ -18,6 +18,7 @@ import threading
 
 import py_trees
 
+import srunner
 from srunner.scenariomanager.carla_data_provider import CarlaDataProvider
 from srunner.scenariomanager.result_writer import ResultOutputProvider
 from srunner.scenariomanager.timer import GameTime, TimeOut
@@ -124,6 +125,7 @@ class ScenarioManager(object):
         self.scenario_duration_game = 0.0
         self.start_system_time = None
         self.end_system_time = None
+        self.world = world
 
         world.on_tick(self._tick_scenario)
 
@@ -207,6 +209,8 @@ class ScenarioManager(object):
                 if self.agent:
                     # Invoke agent
                     action = self.agent()
+                    # Synchronous mode test
+                    self.world.tick()
                     self.ego_vehicle.apply_control(action)
 
                 if self._debug_mode:
@@ -262,14 +266,13 @@ class ScenarioManager(object):
 
         return failure or timeout
 
-    def analyze_scenario_challenge(self, stdout, filename, junit):
+    def analyze_scenario_challenge(self):
         """
         This function is intended to be called from outside and provide
         statistics about the scenario (human-readable, for the CARLA challenge.)
         """
 
         failure = False
-        timeout = False
         result = "SUCCESS"
         score = 0.0
         return_message = []
@@ -279,28 +282,27 @@ class ScenarioManager(object):
                 failure = True
                 result = "FAILURE"
 
+            target_reached = False
+            collisions = False
             for node in self.scenario.test_criteria.children:
-                score += node.score
                 if node.return_message:
                     return_message.append(node.return_message)
+                if isinstance(node, srunner.scenariomanager.atomic_scenario_criteria.RouteCompletionTest):
+                    percentage_completed_route = node.score
+                elif isinstance(node, srunner.scenariomanager.atomic_scenario_criteria.CollisionTest):
+                    collisions = (node.test_status == "FAILURE")
+                elif isinstance(node, srunner.scenariomanager.atomic_scenario_criteria.InRadiusRegionTest):
+                    target_reached = (node.test_status == "SUCCESS")
+                elif isinstance(node, srunner.scenariomanager.atomic_scenario_criteria.InRouteTest):
+                    offroute = (node.test_status == "FAILURE")
 
-        else:
-            for criterion in self.scenario.test_criteria:
-                score += criterion.score
-                if criterion.return_message:
-                    return_message.append(criterion.return_message)
-
-                if (not criterion.optional and
-                        criterion.test_status != "SUCCESS" and
-                        criterion.test_status != "ACCEPTABLE"):
-                    failure = True
-                    result = "FAILURE"
-                elif criterion.test_status == "ACCEPTABLE":
-                    result = "ACCEPTABLE"
+            if target_reached:
+                score = 100.0
+            else:
+                score = percentage_completed_route
 
 
         if self.scenario.timeout_node.timeout and not failure:
-            timeout = True
             result = "TIMEOUT"
 
 

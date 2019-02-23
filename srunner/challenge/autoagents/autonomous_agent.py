@@ -2,12 +2,12 @@
 from srunner.challenge.envs.sensor_interface import SensorInterface
 
 class AutonomousAgent():
-    def __init__(self):
+    def __init__(self, world):
         #  current global plans to reach a destination
         self._global_plan = None,
 
         # this data structure will contain all sensor data
-        self.sensor_interface  = SensorInterface()
+        self.sensor_interface = SensorInterface()
 
         # agent's initialization
         self.setup()
@@ -59,6 +59,7 @@ class AutonomousAgent():
         input_data = self.sensor_interface.get_data()
 
         control = self.run_step(input_data)
+
         control.manual_gear_shift = False
 
         return control
