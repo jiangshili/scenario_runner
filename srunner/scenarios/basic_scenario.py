@@ -58,7 +58,7 @@ class BasicScenario(object):
 
         # Check if the CARLA server uses the correct map
         self._town = town
-        self._check_town(world)
+        #self._check_town(world)
 
         self.ego_vehicle = ego_vehicle
         self.other_actors = other_actors
