@@ -326,7 +326,6 @@ class ChallengeEvaluator(object):
                     lat_ref, lon_ref = self._get_latlon_ref()
                     global_route, gps_route = self.retrieve_route(config.ego_vehicle, config.target, lat_ref, lon_ref)
                     config.route = global_route
-
                     scenario = scenario_class(self.world,
                                               self.ego_vehicle,
                                               self.actors,
@@ -334,6 +333,7 @@ class ChallengeEvaluator(object):
                                               args.randomize,
                                               args.debug,
                                               config)
+
                 except Exception as exception:
                     print("The scenario cannot be loaded")
                     traceback.print_exc()

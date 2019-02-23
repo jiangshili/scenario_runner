@@ -126,7 +126,7 @@ class ScenarioManager(object):
         self.start_system_time = None
         self.end_system_time = None
         self.world = world
-
+        print ("Set tick function ")
         world.on_tick(self._tick_scenario)
 
     def load_scenario(self, scenario):
