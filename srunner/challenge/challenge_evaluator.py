@@ -215,8 +215,8 @@ class ChallengeEvaluator(object):
             self._sensors_list.append(sensor)
 
         # check that all sensors have initialized their data structure
-        while not self.agent_instance.all_sensors_ready():
-            time.sleep(0.1)
+        # while not self.agent_instance.all_sensors_ready():
+        time.sleep(0.1)
 
 
     def prepare_actors(self, config):
@@ -322,6 +322,7 @@ class ChallengeEvaluator(object):
 
                 try:
                     self.prepare_actors(config)
+                    print (" Prepared actors")
                     lat_ref, lon_ref = self._get_latlon_ref()
                     global_route, gps_route = self.retrieve_route(config.ego_vehicle, config.target, lat_ref, lon_ref)
                     config.route = global_route
@@ -341,7 +342,7 @@ class ChallengeEvaluator(object):
 
                 # Load scenario and run it
                 self.manager.load_scenario(scenario)
-
+                print ( " will run scneario ")
                 self.manager.run_scenario(self.agent_instance)
 
                 # Provide outputs if required
